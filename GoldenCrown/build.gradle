@@ -1,0 +1,53 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.geektrust'
+version = '1.0'
+sourceCompatibility = 11
+targetCompatibility = 11
+
+
+jar {
+    archiveBaseName = 'geektrust' //Please do not change this final artifact name
+    archiveVersion = null   //Please do not change this final artifact version
+    version = null   //Please do not change this final artifact version
+    manifest {
+        attributes 'Main-Class' : 'com.geektrust.Geektrust' //Change this to the main class of your program which will be executed
+    }
+    // To create a single jar with all dependencies.
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    } {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+//Add your dependencies here
+dependencies {
+    // https://mvnrepository.com/artifact/com.google.guava/guava
+    compile group: 'com.google.guava', name: 'guava', version: '29.0-jre'
+    // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.6.2'
+    // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-engine
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.6.2'
+}
+
+test {
+    useJUnitPlatform()
+    afterSuite { desc, result ->
+        if (!desc.parent) {
+            println "\nTEST RESULT: ${result.resultType}"
+            println "TEST SUMMARY: RAN ${result.testCount} TESTS, " +
+                    "${result.successfulTestCount} SUCCEEDED, " +
+                    "${result.failedTestCount} FAILED, " +
+                    "${result.skippedTestCount} SKIPPED"
+        }
+    }
+}
